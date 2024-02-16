@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import environ
+from db.db_conn import get_db_connection
 
 env = environ.Env()
 env.read_env()

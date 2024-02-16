@@ -8,5 +8,5 @@ def get_db_connection():
 
     return client
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(settings.MONGODB_URI)
