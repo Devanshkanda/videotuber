@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import environ
-from db.db_conn import get_db_connection
+import db_conn
 
 env = environ.Env()
 env.read_env()
@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     'rest_framework',
-    'users'
+    'users',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -99,15 +99,20 @@ WSGI_APPLICATION = 'chai_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 MONGODB_URI = env("MONGODB_URI")
 
+
+PATANAHI = "PATAHAII KYA HOGA BC"
+
+
+CLIENT = db_conn.get_db_connection(MONGODB_URI)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -149,3 +154,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+print(MONGODB_URI)
