@@ -1,5 +1,4 @@
 import pymongo
-from django.conf import settings
 
 
 def get_db_connection(url):
@@ -13,8 +12,10 @@ def get_db_connection(url):
         print(client)
 
         print("Successfully connected to mongodb")
-        
-        my_db = client['testDB']
+
+        db_name = client['youtube_db']
+
+        return db_name, client
     
     except Exception as e:
         print(f"Error Connecting To MongoDB Atlas: {str(e)}")

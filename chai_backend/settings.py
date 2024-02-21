@@ -112,7 +112,7 @@ MONGODB_URI = env("MONGODB_URI")
 PATANAHI = "PATAHAII KYA HOGA BC"
 
 
-CLIENT = db_conn.get_db_connection(MONGODB_URI)
+DB, CLIENT = db_conn.get_db_connection(MONGODB_URI)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
