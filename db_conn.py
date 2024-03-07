@@ -1,4 +1,4 @@
-import pymongo
+import pymongo, mongoengine
 
 
 def get_db_connection(url):
@@ -6,6 +6,8 @@ def get_db_connection(url):
         print("before connecting to mongodb")
 
         client = pymongo.MongoClient(url)
+
+        client2 = mongoengine.connect(host=url)
         
         print("After connecting to mongodb")
 

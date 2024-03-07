@@ -73,7 +73,20 @@ class userDetails(Document):
     fullname = StringField(max_length=20, required=True)
     email = EmailField(required=True)
     password = StringField(required=True)
-    avatar = StringField()
-    coverImage = StringField()
+    avatar = StringField() # url of file stored on cloudinary
+    coverImage = StringField() # url of file stored on cloudinary
     created_at = DateTimeField(default=datetime.datetime.utcnow())
     refreshtoken = StringField()
+
+
+class videos(Document):
+    video_title = StringField(max_length=50, required=True)
+    thumbnail = StringField() # url of file stored on cloudinary
+    video_file = StringField() # url of file stored on cloudinary
+    desc = StringField(default=f"{video_title}")
+    duration = IntField(default=0)
+    views = fields.Int64()
+    isPublished = BooleanField(default=False)
+    owner = ObjectIdField(required=True)
+    created_at = DateTimeField(default=datetime.datetime.utcnow())
+    updated_at = DateTimeField(default=datetime.datetime.utcnow())
