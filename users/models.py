@@ -23,7 +23,7 @@ class videos(Document):
     video_file = StringField() # url of file stored on cloudinary
     desc = StringField(default=f"{video_title}")
     duration = IntField(default=0)
-    views = fields.Int64()
+    views = IntField(defualt=0)
     isPublished = BooleanField(default=False)
     owner = ReferenceField(userDetails, reverse_delete_rule=CASCADE) # a foreign key refering to userDetails table
     created_at = DateTimeField(default=datetime.datetime.utcnow())

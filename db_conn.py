@@ -1,18 +1,19 @@
 import pymongo, mongoengine
+from django.conf import settings
 
-
-def get_db_connection(url):
+def get_db_connection(url: str, db_name: str):
     try:
         print("before connecting to mongodb")
 
         client = pymongo.MongoClient(url)
 
-        client2 = mongoengine.connect(host=url)
+        client2 = mongoengine.connect(host=url, db=db_name)
         
         print("After connecting to mongodb")
 
         print(client)
 
+        print(f"this is the connection from mongoengine: {client2['youtube_db']}")
         print("Successfully connected to mongodb")
 
         db_name = client['youtube_db']

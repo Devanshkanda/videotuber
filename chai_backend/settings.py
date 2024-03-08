@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 EXTERNAL_APPS = [
     'rest_framework',
     'users',
+    'cloudinary'
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
@@ -112,8 +113,13 @@ MONGODB_URI = env("MONGODB_URI")
 PATANAHI = "PATAHAII KYA HOGA BC"
 
 
-DB, CLIENT = db_conn.get_db_connection(MONGODB_URI)
+DB_NAME: str = env('DB_NAME')
 
+
+DB, CLIENT = db_conn.get_db_connection(MONGODB_URI, DB_NAME)
+
+
+CLOUDINARY_URL = env('CLOUDINARY_URL', default=None)
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

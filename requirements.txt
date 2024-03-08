@@ -4,3 +4,4 @@ djangorestframework
 dnspython
 pymongo
 mongoengine
+cloudinary
