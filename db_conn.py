@@ -1,5 +1,4 @@
 import pymongo, mongoengine
-from django.conf import settings
 
 def get_db_connection(url: str, db_name: str):
     try:
