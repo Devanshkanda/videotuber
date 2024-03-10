@@ -7,5 +7,5 @@ router = routers.DefaultRouter()
 router.register(r"videos", viewset=showAllVideos, basename="show all videos")
 
 urlpatterns = [
-    path('', include('router.urls'))
+    path('', include(router.urls))
 ]
