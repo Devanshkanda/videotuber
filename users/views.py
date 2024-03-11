@@ -1,40 +1,47 @@
-from .utils import try_catch_wrapper, ApiError, ApiResponse
+from .utils import try_catch_wrapper, ApiError, ApiResponse, cloudinary_file_uploader_utility
 from .models import *
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 from rest_framework import permissions
+from django.conf import settings
+from .middleware import fileUploadToLocalPath, file_upload_middleware
+import pathlib
 # Create your views here.
 
 
-@try_catch_wrapper
-@api_view(["GET", "POST"])
-@permission_classes([permissions.AllowAny])
-def get_details(request):
-    if request.method == "POST":
-        data = request.data
+class userViewSet(ModelViewSet):
+    # queryset = userDetails.objects.all()
+    permission_classes = [permissions.AllowAny]
 
-        print(data)
-        u1 = userDetails(**data)
-        u1.insert_details()
+    @file_upload_middleware
+    @action(detail=False, methods=['POST'])
+    def test(self, request):
 
-        return ApiResponse({
-            "success": "data inserted successfully bro"
-        },status=200)
-        # return ApiError({"error": "this method request is not allowed"}, status=401)
-    
+        data_and_file = request.data
 
-    elif request.method == "GET":
-        try:
-            print("i am in get request if block")
+        print(data_and_file['A file'])
 
-            context = userDetails.fetch_all_details()
+        file_name = data_and_file['A file'].name
 
-            return ApiResponse({
-                "success": "Fetch all the details of all the users",
-                "data": context
-            }, status=200)
-        except Exception as e:
-            return ApiError({"error": "error a gaya"})
+        if not pathlib.Path(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{file_name}").exists():
+            return ApiError({
+                "error": "file upload failed"
+            }, status=500)
         
 
-    else:
-        return ApiError({"error": "kuch galat ho gaya bhai"})
+        upload_res, secure_url = cloudinary_file_uploader_utility(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{file_name}")
+
+
+        if not upload_res:
+            return ApiError({
+                "error": "file upload failed"
+            }, status=500)
+        
+
+        return ApiResponse(
+            data={
+                'success': "file uploaded successfully",
+                "file url": secure_url
+            },
+            status=201
+        )

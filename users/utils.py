@@ -54,7 +54,7 @@ def cloudinary_file_uploader_utility(localFilePath: str) -> bool:
 
         pathlib.Path(localFilePath).unlink()
 
-        return True
+        return True, data['secure_url']
 
     except Exception as e:
         print(f"Error while uploading file on Cloudinary: {str(e)}")
@@ -72,7 +72,7 @@ class ApiError(Response): # custom class for error responses
             exception=False, 
             content_type=None
         ):
-        super().__init__(data, status, template_name, headers, exception, content_type)
+        return super().__init__(data, status, template_name, headers, exception, content_type)
 
 
 
@@ -87,4 +87,4 @@ class ApiResponse(Response): # custom class for success responses
             exception=False, 
             content_type=None
         ):
-        super().__init__(data, status, template_name, headers, exception, content_type)
+        return super().__init__(data, status, template_name, headers, exception, content_type)
