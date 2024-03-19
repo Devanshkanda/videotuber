@@ -15,9 +15,9 @@ def get_db_connection(url: str, db_name: str):
         print(f"this is the connection from mongoengine: {client2['youtube_db']}")
         print("Successfully connected to mongodb")
 
-        db_name = client['youtube_db']
+        db_name = client2['youtube_db']
 
-        return db_name, client
+        return db_name, client2
     
     except Exception as e:
         print(f"Error Connecting To MongoDB Atlas: {str(e)}")

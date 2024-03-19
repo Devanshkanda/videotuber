@@ -5,3 +5,5 @@ dnspython
 pymongo
 mongoengine
 cloudinary
+django-rest-framework-mongoengine
+blinker

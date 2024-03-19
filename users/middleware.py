@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
-
+from .utils import ApiError
 
 class fileUploadToLocalPath:
     def __init__(self, get_response) -> None:
@@ -16,6 +16,11 @@ class fileUploadToLocalPath:
 
             if not fetch_file:
                 print("no file fetched")
+                return ApiError({'error': 'file format found'})
+
+            
+            if not fetch_file.name.endswith((".jpg", ".png")):
+                return ApiError({'error': 'file format not accepted'})
 
 
             with open(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{fetch_file.name}", "wb") as file:
@@ -40,6 +45,10 @@ def file_upload_middleware(func):
 
             if not fetch_file:
                 print("no file fetched")
+                return ApiError({'error': 'file format not found'})
+
+            if not fetch_file.name.endswith((".jpg", ".png")):
+                return ApiError({'error': 'file format not accepted'})
 
 
             with open(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{fetch_file.name}", "wb") as file:

@@ -51,7 +51,8 @@ INSTALLED_APPS = [
 EXTERNAL_APPS = [
     'rest_framework',
     'users',
-    'cloudinary'
+    'cloudinary',
+    'rest_framework_mongoengine',
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
