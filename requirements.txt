@@ -2,7 +2,7 @@ django
 django-environ
 djangorestframework
 dnspython
-pymongo
+pymongo[srv]
 mongoengine
 cloudinary
 django-rest-framework-mongoengine

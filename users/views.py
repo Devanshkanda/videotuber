@@ -14,6 +14,7 @@ class userViewSet(ModelViewSet):
     queryset = userDetails.objects.all()
     serializer_class = User_Serializer
     permission_classes = [permissions.AllowAny]
+    http_method_names = ['GET', 'POST']
 
     def create(self, request):
         # return super().create(request, *args, **kwargs)
@@ -35,7 +36,8 @@ class userViewSet(ModelViewSet):
             serialize.save()
 
             return ApiResponse({
-                "success": "user details saved and created successfully"
+                "success": "user details saved and created successfully",
+                "data": serialize.data
             }, status=201)
         
         return ApiError({
@@ -50,9 +52,14 @@ class userViewSet(ModelViewSet):
 
         data_and_file = request.data
 
-        print(data_and_file['A file'])
+        print(data_and_file['file'])
 
-        file_name = data_and_file['A file'].name
+        file_name = data_and_file['file'].name
+
+        if not file_name:
+            return ApiError({
+                "error": "no avatar file found"
+            }, status=400)
 
         if not pathlib.Path(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{file_name}").exists():
             return ApiError({
