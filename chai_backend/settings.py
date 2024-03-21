@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import environ
 import db_conn
+import cloudinary
 
 env = environ.Env()
 env.read_env()
@@ -63,7 +64,7 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
 
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework.authentication.BasicAuthentication',
@@ -129,6 +130,13 @@ DB, CLIENT = db_conn.get_db_connection(MONGODB_URI, DB_NAME)
 
 
 CLOUDINARY_URL = env('CLOUDINARY_URL', default=None)
+
+
+# cloudinary_obj = cloudinary.config(url=f"{settings.CLOUDINARY_URL}")
+
+cloudinary_obj = cloudinary.config(url=f"{CLOUDINARY_URL}")
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 

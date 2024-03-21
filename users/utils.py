@@ -16,9 +16,9 @@ def try_catch_wrapper(func):
 
 def cloudinary_file_uploader_utility(localFilePath: str) -> bool:
     try:  
-        cloudinary_obj = cloudinary.config(url=f"{settings.CLOUDINARY_URL}")
+        # cloudinary_obj = cloudinary.config(url=f"{settings.CLOUDINARY_URL}")
 
-        print(cloudinary_obj, cloudinary_obj.__dir__, cloudinary_obj.__dict__)
+        # print(cloudinary_obj, cloudinary_obj.__dir__, cloudinary_obj.__dict__)
         
         from cloudinary import uploader
         
@@ -36,10 +36,6 @@ def cloudinary_file_uploader_utility(localFilePath: str) -> bool:
 
         if not localFilePath or localFilePath is None:
             print("throw error that file path does not exist")
-            return False
-        
-        if not pathlib.Path(localFilePath).exists():
-            print("file does not exist on that path")
             return False
 
         data = uploader.upload(

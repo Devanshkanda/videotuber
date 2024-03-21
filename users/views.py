@@ -1,9 +1,9 @@
 from .utils import try_catch_wrapper, ApiError, ApiResponse, cloudinary_file_uploader_utility
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework import permissions
+from rest_framework import permissions, status
 from django.conf import settings
-from .middleware import fileUploadToLocalPath, file_upload_middleware
+from .middleware import file_upload_middleware
 from .models import *
 from .serializer import User_Serializer
 import pathlib
@@ -14,7 +14,7 @@ class userViewSet(ModelViewSet):
     queryset = userDetails.objects.all()
     serializer_class = User_Serializer
     permission_classes = [permissions.AllowAny]
-    http_method_names = ['GET', 'POST']
+    # http_method_names = ['GET', 'POST']
 
     def create(self, request):
         # return super().create(request, *args, **kwargs)
@@ -38,18 +38,18 @@ class userViewSet(ModelViewSet):
             return ApiResponse({
                 "success": "user details saved and created successfully",
                 "data": serialize.data
-            }, status=201)
+            }, status=status.HTTP_201_CREATED)
         
         return ApiError({
             "error": "failed to save user details. try again",
             "errpr details": serialize.errors
-        }, status=400)
+        }, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-    @file_upload_middleware
     @action(detail=False, methods=['POST'])
+    @file_upload_middleware
     def uploadAvatar(self, request):
-
+        print("i am in upload avatar func")
         data_and_file = request.data
 
         print(data_and_file['file'])
@@ -67,19 +67,23 @@ class userViewSet(ModelViewSet):
             }, status=500)
         
 
-        upload_res, secure_url = cloudinary_file_uploader_utility(f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{file_name}")
+        localFilePath: str = f"{settings.TEMP_MEDIA_UPLOAD_PATH}/{file_name}"
+
+        upload_res, secure_url = cloudinary_file_uploader_utility(localFilePath)
 
 
         if not upload_res:
             return ApiError({
                 "error": "file upload failed"
-            }, status=500)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        
+        # here i can now store the secure url of the file in the current user model object
 
         return ApiResponse(
             data={
                 'success': "file uploaded successfully",
                 "file url": secure_url
             },
-            status=201
+            status=status.HTTP_201_CREATED
         )

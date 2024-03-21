@@ -6,8 +6,8 @@ class User_Serializer(serializers.DocumentSerializer):
 
     class Meta:
         model = userDetails
-        # exclude = ['refreshtoken', 'password']
-        field = '__all__'
+        exclude = ['refreshtoken', 'password']
+        # field = '__all__'
     
 
     def validate(self, validated_data):
