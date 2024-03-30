@@ -7,3 +7,5 @@ mongoengine
 cloudinary
 django-rest-framework-mongoengine
 blinker
+djangorestframework-simplejwt
+django[bcrypt]

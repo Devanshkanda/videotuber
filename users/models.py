@@ -1,5 +1,7 @@
 # from django.db import models
 import datetime
+from django.contrib.auth.hashers import check_password
+import bcrypt
 from mongoengine import *
 
 class userDetails(Document):
@@ -12,3 +14,15 @@ class userDetails(Document):
     created_at = DateTimeField(default=datetime.datetime.now(datetime.UTC))
     updated_at = DateTimeField(default=datetime.datetime.now(datetime.UTC))
     refreshtoken = StringField()
+
+
+    def get_password(self) -> str:
+        return self.password
+    
+    def set_password(self, plain_text: str) -> None:
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password=plain_text.encode(), salt=salt)
+        self.password = hashed_password
+    
+    def validate_password(self, plain_text_password: str):
+        return check_password(password=plain_text_password, encoded=self.password)
