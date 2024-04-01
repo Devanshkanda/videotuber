@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
 import cloudinary, pathlib
 
 def try_catch_wrapper(func):
@@ -84,3 +85,16 @@ class ApiResponse(Response): # custom class for success responses
             content_type=None
         ):
         return super().__init__(data, status, template_name, headers, exception, content_type)
+
+
+def generateAccessTokenAndRefreshToken(user):
+    try:
+        # user: userDetails = userDetails.objects.filter(id = userId).first() | None
+
+        refresh = RefreshToken.for_user(user)
+        return refresh
+         
+    except Exception as e:
+        return ApiError({
+            "error": "something went wrong while generating access and refresh token"
+        }, status=500)

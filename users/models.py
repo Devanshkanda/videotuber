@@ -1,6 +1,6 @@
 # from django.db import models
 import datetime
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, BCryptSHA256PasswordHasher
 import bcrypt
 from mongoengine import *
 
@@ -19,10 +19,13 @@ class userDetails(Document):
     def get_password(self) -> str:
         return self.password
     
-    def set_password(self, plain_text: str) -> None:
+    @staticmethod
+    def set_password(plain_text: str) -> None:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password=plain_text.encode(), salt=salt)
-        self.password = hashed_password
+        # self.password = hashed_password
+        return hashed_password
     
     def validate_password(self, plain_text_password: str):
-        return check_password(password=plain_text_password, encoded=self.password)
+        # return check_password(password=plain_text_password, encoded=self.password)
+        return bcrypt.checkpw(plain_text_password.encode(), self.password.encode())

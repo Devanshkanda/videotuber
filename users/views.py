@@ -1,13 +1,19 @@
-from .utils import try_catch_wrapper, ApiError, ApiResponse, cloudinary_file_uploader_utility
+from .utils import (
+    ApiError,
+    ApiResponse,
+    try_catch_wrapper,
+    cloudinary_file_uploader_utility,
+    generateAccessTokenAndRefreshToken
+)
+
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework import permissions, status
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from django.conf import settings
-from django.contrib.auth import authenticate
 from .middleware import file_upload_middleware
 from .models import *
-from .serializer import User_Serializer
+from .serializer import *
 from mongoengine.queryset.visitor import Q as mongo_q
 import pathlib
 # Create your views here.
@@ -17,7 +23,7 @@ class userViewSet(ModelViewSet):
     queryset = userDetails.objects.all()
     serializer_class = User_Serializer
     permission_classes = [permissions.AllowAny]
-    # http_method_names = ['GET', 'POST']
+    # authentication_classes = [JWTStatelessUserAuthentication]
 
     def create(self, request):
         # return super().create(request, *args, **kwargs)
@@ -54,15 +60,21 @@ class userViewSet(ModelViewSet):
     def signup(self, request):
 
         data = request.data
-
-        serialize = User_Serializer(data=data)
+        print(data)
+        serialize = UserSignupSerializer(data=data)
 
         if serialize.is_valid():
-            serialize.save()
+            user: userDetails = serialize.save()
 
+            userdata = {
+                "id": str(user.id),
+                "username": str(user.username),
+                "fullname": str(user.fullname),
+            }
+            
             return ApiResponse({
                 "success": "user details saved and created successfully",
-                "data": serialize.data
+                "data": userdata
             }, status=status.HTTP_201_CREATED)
         
         return ApiError({
@@ -88,35 +100,42 @@ class userViewSet(ModelViewSet):
         #     }, status=400)
         
         
-        username, email, password = request.data
+        username, email, password = request.data.values()
+        print(username, email, password)
 
         if (not username and not email):
             return ApiError({
                 "error": "username or password is required"
             }, status=400)
         
-        user: userDetails = userDetails.objects.filter((mongo_q(username=username) | mongo_q(email=email) | mongo_q(fullname="devansh kanda"))).first()
+        user: userDetails = userDetails.objects.filter(
+            (mongo_q(username=username) | mongo_q(email=email))).first()
+        print(user)
 
-        if not user:
+        if not user or user is None:
             return ApiError({
                 "error": "no user found. incorrect username or password"
             }, status=400)
         
+        # now validate password of the user
 
         if not user.validate_password(password):
             return ApiError({
-                "error": "Incorrect username or password"
-            }, status=400)
-        
+                "error": "Invalid user credentials"
+            }, status=401)
         
         # now we got the entry of the user in our database. now generate jwt tokens
 
+        refreshtoken = generateAccessTokenAndRefreshToken(user)
 
+        user.refreshtoken = str(refreshtoken)
+        user.save()
         
         return ApiResponse({
             "success": "Logged in user successfully",
-            "user": user.username,
-            "access Token": "token"
+            "user": str(user.username),
+            "refresh token": str(refreshtoken),
+            "access Token": str(refreshtoken.access_token)
         })
 
 
@@ -175,6 +194,7 @@ class userViewSet(ModelViewSet):
     @action(detail=False, methods=['POST'])
     @file_upload_middleware
     def uploadCoverImage(self, request):
+
         print("i am in upload avatar func")
         data_and_file = request.data
 
@@ -222,3 +242,15 @@ class userViewSet(ModelViewSet):
             },
             status=status.HTTP_201_CREATED
         )
+
+# from django.http import JsonResponse
+
+# def view1(request):
+#     return JsonResponse({
+#         "success": "i am view one"
+#     })
+
+# def view2(request):
+#     return JsonResponse({
+#         "success": "i am view 2"
+#     })
