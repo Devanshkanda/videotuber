@@ -20,12 +20,12 @@ class userDetails(Document):
         return self.password
     
     @staticmethod
-    def set_password(plain_text: str) -> None:
+    def set_password(plain_text: str) -> bytes:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password=plain_text.encode(), salt=salt)
         # self.password = hashed_password
         return hashed_password
     
-    def validate_password(self, plain_text_password: str):
+    def validate_password(self, plain_text_password: str) -> bool:
         # return check_password(password=plain_text_password, encoded=self.password)
         return bcrypt.checkpw(plain_text_password.encode(), self.password.encode())

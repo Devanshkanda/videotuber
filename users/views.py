@@ -105,7 +105,7 @@ class userViewSet(ModelViewSet):
 
         if (not username and not email):
             return ApiError({
-                "error": "username or password is required"
+                "error": "username or Email is required"
             }, status=400)
         
         user: userDetails = userDetails.objects.filter(
