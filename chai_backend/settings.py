@@ -52,12 +52,15 @@ INSTALLED_APPS = [
 EXTERNAL_APPS = [
     'rest_framework',
     'users',
+    'videos',
+    'utils',
     'cloudinary',
     'rest_framework_mongoengine',
     'rest_framework_simplejwt'
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -68,7 +71,9 @@ REST_FRAMEWORK = {
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
-    )
+    ),
+
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler'
 }
 
 
